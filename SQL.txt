@@ -1,0 +1,296 @@
+select * 
+from Shippers;
+
+select  CategoryName,  Description
+from Categories;
+
+select *
+from Employees;
+
+select FirstName, LastName, HireDate
+from Employees
+where Title = 'Sales Representative' 
+AND Country = 'USA';
+
+select OrderID, OrderDate
+from orders
+where EmployeeID = 5;
+
+select *
+from suppliers;
+
+select SupplierID,ContactName, ContactTitle
+from suppliers
+where ContactTitle <> 'Marketing Manager'
+
+select *
+from products;
+
+select  ProductID, ProductName
+from products
+where ProductName like '%queso%';
+
+select *
+from Orders;
+
+select OrderID, CustomerID, ShipCountry
+from orders
+where  ShipCountry IN ('France', 'Belgium');
+
+select OrderID, CustomerID, ShipCountry
+from orders
+where ShipCountry = 'France' OR ShipCountry= 'Belgium'
+
+
+select OrderID, CustomerID, ShipCountry
+from orders
+where ShipCountry IN ('Brazil', 'Mexico', 'Argentina', 'Venezuela');
+
+select  FirstName, LastName, Title, FORMAT(BirthDate, 'dd-MM-yyyy') AS date
+from employees
+order by  BirthDate DESC;
+
+select FirstName, LastName, Title, BirthDate
+from employees
+order by Birthdate desc;
+
+
+select FirstName, LastName, concat(firstname, '', lastname) as Full_Name
+from employees;
+
+select  OrderID,ProductID, UnitPrice,Quantity, (UnitPrice*Quantity) As Totalprice
+from [Order Details]
+order by OrderID , ProductID;
+
+select count(*) as Number
+from Customers;
+
+select Max(OrderDate) as First_Order
+from orders;
+
+select*
+from customers;
+
+select distinct country
+from customers
+group by country;
+
+select ContactTitle, COUNT(ContactTitle) as Count_titles
+from Customers
+GROUP by ContactTitle;
+
+select *
+from [order details];
+
+select *
+from shippers;
+
+select *
+from products;
+
+select *
+from customers;
+
+select P.ProductName, P.ProductID, S.CompanyName
+from Products P
+inner join Suppliers S
+on P.SupplierID=S.SupplierID
+order by P.ProductID;
+
+select O.OrderID, FORMAT(O.OrderDate, 'yy-MM-yyy') as date, S.CompanyName
+from Orders O
+inner join Shippers S
+on O.ShipperID=S.ShipperID
+order by O.OrderID;
+
+select C.CategoryName, count(P.ProductName) as Total_product
+from categories C
+inner join Products P
+on C.CategoryID=P.categoryID
+group by C.CategoryName;
+
+select country, city, count(city) as hhh
+from customers
+group by city, country
+order by hhh desc;
+
+select *
+from customers;
+
+select productID, ProductName,  UnitsOnOrder, UnitsInstock, Discontinued, ReorderLevel
+from products
+where (UnitsInstock+UnitsOnOrder) < ReorderLevel
+order by productID;
+
+select CustomerID, ContactName, Region
+from customers
+order by Region desc;
+
+select *
+from Categories;
+
+select *
+from Products;
+
+select c.CategoryName, COUNT(p.productName)
+from Categories c
+inner join Products p
+on c.CategoryID=p.CategoryID
+group by c.CategoryName;
+
+select city, country, COUNT(*) As total
+from customers
+group by country, city
+ORDER BY TOTAL DESC;
+
+SELECT ProductName, UnitsInStock, ReorderLevel,  UnitsOnOrder,Discontinued
+from Products
+Where (UnitsInStock + UnitsOnOrder) < ReorderLevel
+order by ProductID;
+
+select *
+from customers;
+
+select CustomerID, contactName, Region
+from customers
+order by Region desc;
+
+select customerID, contactName, Region,
+CASE WHEN REGION IS NULL THEN 1
+ELSE 0 END jjj
+FROM Customers
+order by Region desc;
+
+select *
+from [Order Details];
+
+select *
+from Territories;
+
+select *
+from Orders;
+
+select ShipCountry, AVG(freight) as eddie
+from Orders
+group by ShipCountry
+order by eddie desc;
+
+select ShipCountry, AVG(freight) as eddie
+from Orders
+where OrderDate BETWEEN '2015-01-01' AND '2015-12-31'
+group by ShipCountry
+order by eddie;
+
+select *
+from Customers;
+
+select *
+from Orders;
+
+select *
+from [Order Details];
+
+------Question 30. Employee order not =4 failed
+select c.customerID, o.OrderID, O.EmployeeID
+from Customers c
+left join orders O 
+on c.customerID = O.CustomerID
+where O.EmployeeID != 4 
+
+select customerID
+from customers
+where customerID not in
+(select CustomerID
+from orders
+where EmployeeID = 4);
+
+select customerID
+from customers
+where Not Exists
+(select customerID
+from orders
+where orders.CustomerID= Customers.CustomerID
+and EmployeeID =4);
+
+
+select EmployeeID, Orderdate,OrderID
+from orders
+where OrderDate = EOMONTH(OrderDate)
+order by EmployeeID, OrderID;
+
+select *
+from orders;
+
+select *
+from [Order Details];
+
+select top 10 o.orderID, count(*) as total
+from Orders o
+inner join [Order Details] od
+on o.OrderID = od.OrderID
+group by o.OrderID
+order by total desc;
+
+select top 2 percent OrderID
+from orders
+order by NEWID();
+
+select o.orderID, count(*)
+from Orders o
+inner join [Order Details] od
+on o.OrderID = od.OrderID
+where od.Quantity >= 60
+group by o.OrderID, od.Quantity
+having count(*) >1
+
+select *
+from Orders;
+
+select *
+from [Order Details];
+
+Select OrderID, Quantity, count(*)
+From [Order Details]
+Where Quantity >= 60
+Group By
+OrderID
+,Quantity
+Having Count(*) > 1
+
+
+
+
+
+
+
+-------
+select C.CustomerID, C.CompanyName, O.OrderID, Total = (UnitPrice * Quantity) - (Discount)
+from customers c
+inner join Orders o
+on c.CustomerID = o.CustomerID
+inner join [Order Details] od
+on od.OrderID = o.OrderID
+where o.OrderDate BETWEEN '2016-01-01' AND '2016-12-31'
+ORDER BY Total;
+
+
+-----Using Joins to analyse Nothwind dataset
+Select
+C.CustomerID
+,C.CompanyName
+,O.OrderID
+,TotalOrderAmount = SUM(Quantity * UnitPrice)
+From Customers C
+Join Orders O
+on O.CustomerID = C.CustomerID
+Join [Order Details]
+on O.OrderID = O.OrderID
+Where
+O.OrderDate >= '20160101'
+and O.OrderDate < '20170101'
+Group by
+C.CustomerID
+,C.CompanyName
+,O.Orderid
+Having Sum(Quantity * UnitPrice) > 10000
+Order by TotalOrderAmount DESC;
